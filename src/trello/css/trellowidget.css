@@ -1,0 +1,24 @@
+
+.trello-wrapper {
+    background-color: #237cf1;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+.app-title {
+    color: #fff;
+    text-align: center;
+}
+
+.widget-main {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dragged {
+    position: absolute;
+    z-index: 999;
+}
+
+
+

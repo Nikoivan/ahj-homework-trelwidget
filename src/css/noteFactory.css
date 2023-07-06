@@ -1,0 +1,39 @@
+.list-wrapper {
+    max-width: 30%;
+    background-color: #c6c0c0;
+    flex-grow: 1;
+    flex-shrink: 0;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 5px; 
+}
+
+.list-wrapper:last-child {
+    margin-right: 0;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+
+.list-title, .list-settings {
+    display: block;
+    font-weight: 600;
+}
+
+.list {
+    list-style-type: none;
+    padding: 0;      
+}
+
+.list-footer {
+    margin-left: 10px;
+    color: #666565;
+}
+
+.btn:hover {
+    cursor: pointer;
+}
+
