@@ -74,4 +74,8 @@ export default class NoteFactory {
     const newTask = new this.taskType(data);
     this.list.append(newTask.task);
   }
+
+  getSome() {
+    console.log(JSON.stringify(this.note));
+  }
 }
