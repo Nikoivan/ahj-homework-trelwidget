@@ -14,7 +14,7 @@ export default class TrelloWidget {
                 <span class="list-title">TODO</span>
                 <span class="list-settings">...</span>
             </div>
-            <ul class="list todo"></ul>
+            <ul class="list todo" data-title="todo"></ul>
             <span class="list-footer btn">+ Add another card</span>
         </div>
         <div class="list-wrapper">
@@ -22,7 +22,7 @@ export default class TrelloWidget {
                 <span class="list-title">INPROGRESS</span>
                 <span class="list-settings">...</span>
             </div>
-            <ul class="list inprogress"></ul>
+            <ul class="list inprogress" data-title="inprogress"></ul>
             <span class="list-footer btn">+ Add another card</span>
         </div>
         <div class="list-wrapper">
@@ -30,7 +30,7 @@ export default class TrelloWidget {
                 <span class="list-title">DONE</span>
                 <span class="list-settings">...</span>
             </div>
-            <ul class="list done"></ul>
+            <ul class="list done" data-title="done"></ul>
             <span class="list-footer btn">+ Add another card</span>
         </div>
     </div>
@@ -49,14 +49,16 @@ export default class TrelloWidget {
     this.removeTask = this.removeTask.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    // this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
+    this.saveTasks = this.saveTasks.bind(this);
+    this.loadTasks = this.loadTasks.bind(this);
 
     this.btns.forEach((el) => {
       el.addEventListener("click", this.onAddTask);
     });
     this.element.addEventListener("mousedown", this.onMouseDown);
-    document.body.addEventListener("mousemove", this.onMouseMove);
+    window.addEventListener("beforeunload", this.saveTasks);
+    window.addEventListener("DOMContentLoaded", this.loadTasks);
   }
 
   onAddTask(e) {
@@ -85,19 +87,51 @@ export default class TrelloWidget {
     element.append(newTask.task);
   }
 
+  saveTasks() {
+    if (this.tasks.length === 0) return;
+    const saveObject = [];
+    this.tasks.forEach((el) => {
+      const task = {
+        data: el.data,
+        list: el.task.closest(".list").dataset.title,
+      };
+      saveObject.push(task);
+    });
+    localStorage.setItem("trello", JSON.stringify(saveObject));
+  }
+
+  loadTasks(e) {
+    const json = localStorage.getItem("trello");
+
+    let savedTasks;
+
+    try {
+      savedTasks = JSON.parse(json);
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (savedTasks) {
+      savedTasks.forEach((item) => {
+        const el = new this.TaskType(item.data);
+        const list = this.element.querySelector(`.${item.list}`);
+        list.append(el.task);
+        this.tasks.push(el);
+      });
+    }
+  }
+
   onMouseUp(e) {
     if (!this.actualTask) return;
 
-    const onMouseUpTarget = e.target;
     this.emptyRect = null;
-
     this.empty.remove();
     this.actualTask.task.classList.remove("empty");
     this.actualTask = null;
     this.actualList = null;
 
     document.documentElement.removeEventListener("mouseup", this.onMouseUp);
-    document.documentElement.removeEventListener("mouseover", this.onMouseOver);
+    document.documentElement.removeEventListener("mousemove", this.onMouseMove);
   }
 
   onMouseDown(e) {
@@ -112,11 +146,26 @@ export default class TrelloWidget {
 
     this.actualList = e.target.closest(".list");
     this.actualTask = this.tasks.find((el) => el.task === e.target);
-    const data = this.actualTask.data;
-    const width = e.target.offsetWidth;
 
     this.actualTask.task.classList.add("empty");
 
+    const settings = {
+      data: this.actualTask.data,
+      width: e.target.offsetWidth,
+      top,
+      left,
+    };
+
+    this.empty = this.getDragged(settings);
+
+    this.actualTask.task.after(this.empty);
+
+    document.documentElement.addEventListener("mouseup", this.onMouseUp);
+    document.documentElement.addEventListener("mousemove", this.onMouseMove);
+  }
+
+  getDragged(settings) {
+    const { data, width, top, left } = settings;
     const draggedEl = document.createElement("div");
     draggedEl.textContent = data;
     draggedEl.classList.add("task");
@@ -124,14 +173,7 @@ export default class TrelloWidget {
     draggedEl.style.width = `${width - 10}px`;
     draggedEl.style.top = `${top - 5}px`;
     draggedEl.style.left = `${left}px`;
-
-    this.empty = draggedEl;
-
-    this.actualTask.task.after(draggedEl);
-
-    document.documentElement.addEventListener("mouseup", this.onMouseUp);
-    document.documentElement.addEventListener("mouseover", this.onMouseOver);
-    this.items = [...document.querySelectorAll(".task")];
+    return draggedEl;
   }
 
   onMouseMove(e) {
@@ -142,14 +184,6 @@ export default class TrelloWidget {
     this.empty.style.top = `${e.clientY - this.emptyRect.y}px`;
     this.empty.style.left = `${e.clientX - this.emptyRect.x}px`;
   }
-
-  /*onMouseOver(e) {
-    if (!this.actualTask) return;
-    const list = this.getList(e);
-    if (list && this.actualList !== list) {
-      this.actualList = list;
-    }
-  }*/
 
   replaceTask(e) {
     if (e.target.classList.contains("task")) {
