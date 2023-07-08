@@ -113,7 +113,7 @@ export default class TrelloWidget {
 
     if (savedTasks) {
       savedTasks.forEach((item) => {
-        const el = new this.TaskType(item.data);
+        const el = new this.TaskType(item.data, this.removeTask);
         const list = this.element.querySelector(`.${item.list}`);
         list.append(el.task);
         this.tasks.push(el);

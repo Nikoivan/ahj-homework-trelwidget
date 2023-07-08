@@ -50,6 +50,7 @@ export default class Task {
   }
 
   remove() {
+    console.log(this.callbackRemove);
     this.callbackRemove(this.element);
     this.element.remove();
   }
