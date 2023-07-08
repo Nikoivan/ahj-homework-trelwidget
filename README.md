@@ -1,3 +1,3 @@
 # Task Trello
 
-[![Build status](https://ci.appveyor.com/api/projects/status/ll8tp6vrbkn3jq06?svg=true)](https://ci.appveyor.com/project/Nikoivan/trello)
+[![Build status](https://ci.appveyor.com/api/projects/status/atohm1896enou5a8?svg=true)](https://ci.appveyor.com/project/Nikoivan/ahj-homework-trelwidget)

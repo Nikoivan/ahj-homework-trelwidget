@@ -100,7 +100,7 @@ export default class TrelloWidget {
     localStorage.setItem("trello", JSON.stringify(saveObject));
   }
 
-  loadTasks(e) {
+  loadTasks() {
     const json = localStorage.getItem("trello");
 
     let savedTasks;
@@ -121,7 +121,7 @@ export default class TrelloWidget {
     }
   }
 
-  onMouseUp(e) {
+  onMouseUp() {
     if (!this.actualTask) return;
 
     this.emptyRect = null;

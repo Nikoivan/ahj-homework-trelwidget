@@ -33,7 +33,7 @@ export default class Task {
     this.element.addEventListener("mouseover", this.onMouseOver);
   }
 
-  onMouseOver(e) {
+  onMouseOver() {
     const removeBtn = document.createElement("img");
     removeBtn.classList.add("remove-btn");
     removeBtn.classList.add("overlap");
