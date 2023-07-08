@@ -2,11 +2,12 @@ import "../css/task.css";
 import imgUrl from "../img/close.png";
 
 export default class Task {
-  constructor(data) {
+  constructor(data, remove) {
     const task = document.createElement("li");
     task.classList.add("task");
     task.textContent = data;
     this.element = task;
+    this.callbackRemove = remove;
 
     this.onMouseOver = this.onMouseOver.bind(this);
     this.onMouseOut = this.onMouseOut.bind(this);
@@ -20,8 +21,12 @@ export default class Task {
     return this.element;
   }
 
+  get data() {
+    return this.element.textContent;
+  }
+
   onMouseOut() {
-    this.element.classList.toggle("overlapped");
+    this.element.classList.remove("overlapped");
     this.closeBtn.remove();
     this.element.removeEventListener("mouseout", this.onMouseOut);
 
@@ -37,14 +42,15 @@ export default class Task {
     this.closeBtn = removeBtn;
 
     this.element.append(this.closeBtn);
-    this.element.classList.toggle("overlapped");
+    this.element.classList.add("overlapped");
 
     this.closeBtn.addEventListener("mousedown", this.remove);
     this.element.removeEventListener("mouseover", this.onMouseOver);
     this.element.addEventListener("mouseout", this.onMouseOut);
   }
 
-  remove(e) {
+  remove() {
+    this.callbackRemove(this.element);
     this.element.remove();
   }
 }

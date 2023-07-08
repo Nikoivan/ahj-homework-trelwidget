@@ -15,11 +15,6 @@
     justify-content: space-between;
 }
 
-.dragged {
-    position: absolute;
-    z-index: 999;
-}
-
 .list-wrapper {
     max-width: 30%;
     background-color: #c6c0c0;
@@ -59,6 +54,20 @@
     cursor: pointer;
 }
 
+.dragged {
+    position: absolute;
+    z-index: 999;
+    pointer-events: none;
+}
 
+.empty {
+    pointer-events: none;
+    opacity: 0;
+}
+
+.drag {
+    position: absolute;
+    z-index: 2;
+}
 
 
